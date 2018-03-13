@@ -26,7 +26,21 @@
 		</script>
 	</head>
 	<body>
-		aaaa
+		
+		<!-- 
+			Abstract:
+				Over the past few years, features derived from functional programming concepts have 
+				been introduced to languages such as Java, Javascript and C++.
+
+				FP concepts such as purity, totality, and determinism are claimed to help us
+				better reason about our program logic, make our code both more testable, and 
+				easier to understand, but how?
+
+				We will learn what FP actually is, and put this bold claim to the test, 
+				working through common patterns found in real-world system and how FP can save the
+				day. 
+		 -->
+
 		<div class="reveal">
 			<div class="slides">
 
@@ -53,29 +67,37 @@
 
 				<section data-markdown>
 					<textarea data-template>
-						Generally, Functional Programming has a strong emphasis on:
+						_Generally_, Functional Programming has a strong emphasis on:
 
 						- Purity
 						- Totality
 						- Determinism
 
-						Let's break these down together
+						First, let's break these concepts down together
 					</textarea>
 				</section>
 
 				<section>
 					<section data-markdown>
-					## Purity
+						## Purity
+						> A 'pure' function is a function where the return value is only 
+						determined by its input values, without observable 'side effects'.
+					</section>
 
-					> A 'pure' function is a function where the return value is only 
-					determined by its input values, without observable 'side effects'.
+					<section data-markdown>
+						#### Referential Transparency
 
+						A logical extension of this concept of 'purity' is that every function call 
+						should be able to be replaced by the subsequent returned value.
 					</section>
 					<section data-markdown>
-					# Is
-					</section>
-					<section data-markdown>
-					## Really Cool
+						```def add2(x: Int, y: Int) = x + y```
+
+						`f(2, 3)` === `5`
+
+						We can replace the function call with confidence as no side effects are occurring.
+
+						We will revisit this!
 					</section>
 				</section>
 
@@ -83,29 +105,92 @@
 					<section data-markdown>
 						## Totality 
 						
-						> A 'total' function must yield the same value for the same input.
+						> A 'total' function must yield an output for every possible input.
 
 					</section>
 					<section data-markdown>
-						# Is
+						#### Division is a good non-total example
+
+						```scala
+						@ 1 / 0 
+						java.lang.ArithmeticException: / by zero
+						```
+
+						An exception is not a returned value, it cheats!
 					</section>
 					<section data-markdown>
-						## Really Cool
+						#### Division continued
+
+						Division is a 'partial function', it is not defined on the divisor value of 0.
+
+						How can we solve this problem?
 					</section>
+					<section data-markdown>
+						#### Solution
+
+						Perhaps we can make a number class with the values of Number or Undefined
+
+						```
+						DivisibleNumber can be one of values {
+							Undefined
+							Number (aka. Integer)
+						}
+						```
+					</section>
+					<section data-markdown>
+						#### Generalized solution
+
+						Generalizing, we can have operations that produce either a result, or no result
+
+						```
+						OptionalResult can be one of values {
+							NoResult
+							SomeResult (of any type)
+						}
+						```
+
+						This is one way of addressing the issue of non-total functions
+					</section>
+					
 				</section>
 
 				<section>
 					<section data-markdown>
 						## Determinism 
 						
-						> A 'deterministic' function must yield the same value for the same input.
-				
+						> A 'deterministic' function must yield the _same_ output for the _same_ input.
 					</section>
 					<section data-markdown>
-						# Is
+						### Immutability
+
+						Immutability refers to the declaration of a value being the **absolute unchanging** value
+
+						Strict immutability lends itself well to creating a deterministic system
 					</section>
 					<section data-markdown>
-						## Really Cool
+						#### What we lose
+						- For loops : `for(i = 0; i++)` 
+						- While loops : `while(i < 10)`
+						- Lots of your favourite object oriented patterns
+					</section>
+					<section data-markdown>
+						#### What we gain
+						- Worry-free parallelism!
+						- Lazy optimization!
+					</section>
+					<section data-markdown>
+						#### Parallelism in FP
+
+						The dreaded 'race condition' scenario is very unlikely to occur in
+						parallel programming due to the immutable nature of values
+					</section>
+					<section data-markdown>
+						#### Lazy Optimization
+
+						If we know that each function is deterministic, it is easy to only calculate 
+						values when we need them, and not when they are initially declared
+
+ 						```lazy val myVal = (1 to 10000000).toList.foldLeft(0)((_, nextVal: Int) => nextVal)```
 					</section>
 				</section>
 
